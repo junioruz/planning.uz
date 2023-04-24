@@ -262,6 +262,7 @@ body div {
 }
 
 .clear {
+  background-color: #D5CCFF;
   position: fixed;
   bottom: 20px;
   cursor: pointer;
@@ -275,9 +276,14 @@ body div {
   width: -moz-max-content;
   width: max-content;
   margin: 0 auto;
+  padding: 6px;
   font-family: "Signika", sans-serif;
   font-size: 1.3rem;
   line-height: 23px;
+}
+
+.clear:hover {
+  color: #0959c2;
 }
 
 .clearImg {

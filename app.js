@@ -3,6 +3,7 @@ const input = document.querySelector(".input")
 const list = document.querySelector(".todosList")
 const clearBtn = document.querySelector(".clear")
 const clearImg = document.querySelector(".clearImg")
+const select = document.querySelector(".filter")
 
 // STATE
 let todos = [ 
@@ -10,12 +11,26 @@ let todos = [
     {value:"Kursga borish", isDone: false, id: "12232"} 
 ]
 
+// STATUS
+let status = "all";
+
+const filterTodosByStatus = (todos, status) => {
+    switch (status) {
+        case "completed":
+            return todos.filter((v) => v.isDone)
+        case "proccess":
+            return todos.filter((v) => !v.isDone)
+        
+            default:
+                return todos;
+    }
+}
+
 // RENDERING
 const render = () => {
     list.innerHTML = ""
-    for(let el of todos) {
+    filterTodosByStatus(todos, status).forEach((el) => {
         const checkBox = el.isDone
-        console.log(checkBox);
         list.innerHTML += `<li class="todo">
             <input class="magic" type="checkbox" ${checkBox == true ? "checked" : ""} onclick = "onCheck('${el.id}')">
             <input value="${el.value}" class="todo_input" type="text" />
@@ -26,7 +41,7 @@ const render = () => {
             <i onclick = "deleteTodo('${el.id}')" class="bx bx-sm bx-trash"></i>
             </div>
             </li>`;
-    }
+    });
 }
 render()
 
@@ -79,3 +94,9 @@ clearBtn.onclick = function() {
     todos = []
     clearImg.style.display = "block";
 }
+
+select.addEventListener("change", (event) => {
+    status = event.target.value;
+    render();
+})
+
