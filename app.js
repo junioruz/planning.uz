@@ -4,12 +4,14 @@ const list = document.querySelector(".todosList")
 const clearBtn = document.querySelector(".clear")
 const clearImg = document.querySelector(".clearImg")
 const select = document.querySelector(".filter")
+const saveBtn = document.querySelector(".save")
 
 // STATE
-let todos = [ 
-    {value:"Universitetga borish", isDone: true, id:"12"}, 
-    {value:"Kursga borish", isDone: false, id: "12232"} 
-]
+let todos = JSON.parse(localStorage.getItem("todos")) || [];
+// [ 
+//     {value:"Universitetga borish", isDone: true, id:"a12"}, 
+//     {value:"Kursga borish", isDone: false, id: "a12232"} 
+// ]
 
 // STATUS
 let status = "all";
@@ -29,13 +31,20 @@ const filterTodosByStatus = (todos, status) => {
 // RENDERING
 const render = () => {
     list.innerHTML = ""
+    localStorage.setItem("todos", JSON.stringify(todos));
     filterTodosByStatus(todos, status).forEach((el) => {
         const checkBox = el.isDone
-        list.innerHTML += `<li class="todo">
+        list.innerHTML += `<li draggable="true" class="todo" id = '${el.id}'>
             <input class="magic" type="checkbox" ${checkBox == true ? "checked" : ""} onclick = "onCheck('${el.id}')">
-            <input value="${el.value}" class="todo_input" type="text" />
+            <input disabled="true" value="${el.value}" class="todo_input" type="text" />
+            <div class="save">
+            <i onclick = "onSave('${el.value}', '${el.id}')" class='bx bx-sm bx-save' ></i>
+            </div>
+            <div class="cancel">
+            <i onclick = "onCancel('${el.value}', '${el.id}')" class='bx bx-md bx-x'></i>
+            </div>
             <div class="edit">
-            <i class="bx bx-sm bxs-pencil"></i>
+            <i onclick = "onEdit('${el.id}')" class="bx bx-sm bxs-pencil"></i>
             </div>
             <div class="delete">
             <i onclick = "deleteTodo('${el.id}')" class="bx bx-sm bx-trash"></i>
@@ -53,14 +62,12 @@ const deleteTodo = (id) => {
         todos = []
         clearImg.style.display = "block";
     }
-    // console.log("delete", id);
 }
 
 // CHECK
 const onCheck = (id) => {
     todos = todos.map((v) => (v.id == id ? {...v, isDone: !v.isDone } : v))
     render()
-    console.log(todos);
 }
 
 // ADD BUTTON
@@ -78,7 +85,7 @@ form.addEventListener("submit", (event) => {
     clearImg.style.display = "none";
     const newTodo = {
         value: inputValue,
-        id: Date.now() + "#",
+        id: "a" + Date.now(),
         isDone: false
     };
 
@@ -87,6 +94,56 @@ form.addEventListener("submit", (event) => {
     render()
 
 })
+
+// EDIT BUTTON
+const onEdit = (id) => {
+    const getBtn = (id, className) => document.querySelector(`#${id} .${className}`)
+
+    const editBtn = getBtn(id, "edit")
+    const saveBtn = getBtn(id, "save")
+    const cancelBtn = getBtn(id, "cancel")
+
+    editBtn.style.display = "none"
+    saveBtn.style.display = "flex"
+    cancelBtn.style.display = "flex"
+
+    // input "disabled" atribute delete
+    const newInp = document.querySelector(`#${id} .todo_input`)
+    newInp.disabled = false
+    newInp.style.color = "#b0aaca"
+    newInp.focus()
+    newInp.selectionStart = newInp.value.length;
+    newInp.selectionEnd = newInp.value.length;
+    // console.log(id);
+}
+
+// CANCEL BUTTON
+const onCancel = (value, id) => {
+    const getBtn = (id, className) => document.querySelector(`#${id} .${className}`)
+    
+    const editBtn = getBtn(id, "edit")
+    const saveBtn = getBtn(id, "save")
+    const cancelBtn = getBtn(id, "cancel")
+
+    editBtn.style.display = "block"
+    saveBtn.style.display = "none"
+    cancelBtn.style.display = "none"
+
+    //inputdagi textni aktivlashtirish va rangini o'zgartirish
+    document.querySelector(`#${id} .todo_input`).disabled = true
+    document.querySelector(`#${id} .todo_input`).style.color = "#2B1887"
+
+    // inputdagi o'zgarishni olmay, asliga qaytarib qo'yish
+    todos = todos.map((v) => (v.id == id ? {...v, value: value } : v))
+    render()
+}
+
+// SAVE BUTTON
+const onSave = (value, id) => {
+    const inputEdit = document.querySelector(`#${id} .todo_input`)
+    todos = todos.map((v) => (v.id == id ? {...v, value: inputEdit.value } : v))
+    render()
+}
 
 // CLEAR BUTTON
 clearBtn.onclick = function() {
@@ -100,3 +157,28 @@ select.addEventListener("change", (event) => {
     render();
 })
 
+// DRAG AND DROP
+const listDrag = document.getElementsByClassName("todo")
+console.log(listDrag);
+
+for(let list of listDrag) {
+   list.addEventListener("dragstart", (el) => {
+    console.log("Star");
+   })
+   list.addEventListener("dragend", (el) => {
+    el.preventDefault();
+    console.log("End");
+   })
+   list.addEventListener("dragover", (el) => {
+    el.preventDefault();
+    console.log("Over");
+   })
+   list.addEventListener("dragleave", (el) => {
+    el.preventDefault();
+    console.log("Leave");
+   })
+   list.addEventListener("drop", (el) => {
+    el.preventDefault();
+    console.log("drop");
+   })
+}
