@@ -51,6 +51,38 @@ const render = () => {
             </div>
             </li>`;
     });
+
+    //DRAG AND DROP
+    let startIndex
+    let dropIndex
+
+    const listDrag = document.getElementsByClassName("todo")
+    console.log(listDrag);
+
+    for(let list of listDrag) {
+        list.addEventListener("dragstart", (el) => {
+         const startId = list.id
+         startIndex = todos.findIndex((el) => el.id == startId)
+        })
+        list.addEventListener("dragend", (el) => {
+         el.preventDefault();
+
+        let newTodos = todos.splice(startIndex, 1)
+        todos.splice(dropIndex, 0, newTodos[0])
+         render()
+        })
+        list.addEventListener("dragover", (el) => {
+         el.preventDefault();
+        })
+        list.addEventListener("dragleave", (el) => {
+         el.preventDefault();
+        })
+        list.addEventListener("drop", (el) => {
+         el.preventDefault();
+         const dropId = list.id
+         dropIndex = todos.findIndex((el) => el.id == dropId)
+        })
+     }
 }
 render()
 
@@ -158,27 +190,3 @@ select.addEventListener("change", (event) => {
 })
 
 // DRAG AND DROP
-const listDrag = document.getElementsByClassName("todo")
-console.log(listDrag);
-
-for(let list of listDrag) {
-   list.addEventListener("dragstart", (el) => {
-    console.log("Star");
-   })
-   list.addEventListener("dragend", (el) => {
-    el.preventDefault();
-    console.log("End");
-   })
-   list.addEventListener("dragover", (el) => {
-    el.preventDefault();
-    console.log("Over");
-   })
-   list.addEventListener("dragleave", (el) => {
-    el.preventDefault();
-    console.log("Leave");
-   })
-   list.addEventListener("drop", (el) => {
-    el.preventDefault();
-    console.log("drop");
-   })
-}
