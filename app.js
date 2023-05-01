@@ -108,8 +108,8 @@ form.addEventListener("submit", (event) => {
     const inputValue = event.target["todo"].value;
     event.target["todo"].value = ""
     if(inputValue == ""){
+        alert("Biror nima yozing ✍")
         input.style.border = "2px solid #cd3838";
-        // alert("Biror nima yozing ✍")
         return
     }else {
         input.style.border = "1px solid #735EFA";
@@ -146,7 +146,6 @@ const onEdit = (id) => {
     newInp.focus()
     newInp.selectionStart = newInp.value.length;
     newInp.selectionEnd = newInp.value.length;
-    // console.log(id);
 }
 
 // CANCEL BUTTON
