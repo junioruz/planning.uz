@@ -35,19 +35,19 @@ const render = () => {
     filterTodosByStatus(todos, status).forEach((el) => {
         const checkBox = el.isDone
         list.innerHTML += `<li draggable="true" class="todo" id = '${el.id}'>
-            <input class="magic" type="checkbox" ${checkBox == true ? "checked" : ""} onclick = "onCheck('${el.id}')">
+            <input class="magic" type="checkbox" ${checkBox == true ? "checked" : ""} >
             <input disabled="true" value="${el.value}" class="todo_input" type="text" />
             <div class="save">
-            <i onclick = "onSave('${el.value}', '${el.id}')" class='bx bx-sm bx-save' ></i>
+            <i class='bx bx-sm bx-save' ></i>
             </div>
             <div class="cancel">
-            <i onclick = "onCancel('${el.value}', '${el.id}')" class='bx bx-md bx-x'></i>
+            <i class='bx bx-md bx-x'></i>
             </div>
             <div class="edit">
-            <i onclick = "onEdit('${el.id}')" class="bx bx-sm bxs-pencil"></i>
+            <i class="bx bx-sm bxs-pencil"></i>
             </div>
             <div class="delete">
-            <i onclick = "deleteTodo('${el.id}')" class="bx bx-sm bx-trash"></i>
+            <i class="bx bx-sm bx-trash"></i>
             </div>
             </li>`;
     });
@@ -57,7 +57,6 @@ const render = () => {
     let dropIndex
 
     const listDrag = document.getElementsByClassName("todo")
-    console.log(listDrag);
 
     for(let list of listDrag) {
         list.addEventListener("dragstart", (el) => {
@@ -86,21 +85,100 @@ const render = () => {
 }
 render()
 
-// DELETE BUTTON
-const deleteTodo = (id) => {
-    todos = todos.filter((v) => v.id != id);
-    render()
-    if(list.innerHTML == ""){
-        todos = []
-        clearImg.style.display = "block";
+// ADDEVENTLISTNER 'CLICK'
+const todoBlock = document.querySelector(".block")
+
+todoBlock.addEventListener('click', (el)=> {
+    const id = el.target.closest(".todo")?.id; 
+
+    // delete button
+    if(el.target.closest(".delete")){
+        todos = todos.filter((v) => v.id != id);
+        render()
+        if(list.innerHTML == ""){
+            todos = []
+            clearImg.style.display = "block";
+        }
     }
-}
+
+    // edit button
+    if(el.target.closest(".edit")){
+        const getBtn = (id, className) => document.querySelector(`#${id} .${className}`)
+
+        const editBtn = getBtn(id, "edit")
+        const saveBtn = getBtn(id, "save")
+        const cancelBtn = getBtn(id, "cancel")
+
+        editBtn.style.display = "none"
+        saveBtn.style.display = "flex"
+        cancelBtn.style.display = "flex"
+
+        // input "disabled" atribute delete
+        const newInp = document.querySelector(`#${id} .todo_input`)
+        newInp.disabled = false
+        newInp.style.color = "#b0aaca"
+        newInp.focus()
+        newInp.selectionStart = newInp.value.length;
+        newInp.selectionEnd = newInp.value.length;
+    }
+
+    // cancel button
+    if(el.target.closest(".cancel")){
+        const getBtn = (id, className) => document.querySelector(`#${id} .${className}`)
+    
+        const editBtn = getBtn(id, "edit")
+        const saveBtn = getBtn(id, "save")
+        const cancelBtn = getBtn(id, "cancel")
+
+        editBtn.style.display = "block"
+        saveBtn.style.display = "none"
+        cancelBtn.style.display = "none"
+
+        //inputdagi textni aktivlashtirish va rangini o'zgartirish
+        document.querySelector(`#${id} .todo_input`).disabled = true
+        document.querySelector(`#${id} .todo_input`).style.color = "#2B1887"
+
+        // inputdagi o'zgarishni olmay, asliga qaytarib qo'yish
+        todos = todos.map((v) => (v.id == id ? {...v, value: v.value } : v))
+        render()
+    }
+
+    // save button
+    if(el.target.closest(".save")){
+        const inputEdit = document.querySelector(`#${id} .todo_input`)
+        todos = todos.map((v) => (v.id == id ? {...v, value: inputEdit.value } : v))
+        render()
+    }
+
+    // list input
+    if(el.target.closest(".todo_input")){
+        console.log('todo_input');
+    }
+
+    // checked
+    if(el.target.closest(".magic")){
+        // const inputLine = document.querySelector(`#${id} .todo_input`)
+        todos = todos.map((v) => (v.id == id ? {...v, isDone: !v.isDone } : v))
+        render()
+    }
+})
+
+
+// DELETE BUTTON
+// const deleteTodo = (id) => {
+//     todos = todos.filter((v) => v.id != id);
+//     render()
+//     if(list.innerHTML == ""){
+//         todos = []
+//         clearImg.style.display = "block";
+//     }
+// }
 
 // CHECK
-const onCheck = (id) => {
-    todos = todos.map((v) => (v.id == id ? {...v, isDone: !v.isDone } : v))
-    render()
-}
+// const onCheck = (id) => {
+//     todos = todos.map((v) => (v.id == id ? {...v, isDone: !v.isDone } : v))
+//     render()
+// }
 
 // ADD BUTTON
 form.addEventListener("submit", (event) => {
@@ -128,55 +206,55 @@ form.addEventListener("submit", (event) => {
 })
 
 // EDIT BUTTON
-const onEdit = (id) => {
-    const getBtn = (id, className) => document.querySelector(`#${id} .${className}`)
+// const onEdit = (id) => {
+//     const getBtn = (id, className) => document.querySelector(`#${id} .${className}`)
 
-    const editBtn = getBtn(id, "edit")
-    const saveBtn = getBtn(id, "save")
-    const cancelBtn = getBtn(id, "cancel")
+//     const editBtn = getBtn(id, "edit")
+//     const saveBtn = getBtn(id, "save")
+//     const cancelBtn = getBtn(id, "cancel")
 
-    editBtn.style.display = "none"
-    saveBtn.style.display = "flex"
-    cancelBtn.style.display = "flex"
+//     editBtn.style.display = "none"
+//     saveBtn.style.display = "flex"
+//     cancelBtn.style.display = "flex"
 
-    // input "disabled" atribute delete
-    const newInp = document.querySelector(`#${id} .todo_input`)
-    newInp.disabled = false
-    newInp.style.color = "#b0aaca"
-    newInp.focus()
-    newInp.selectionStart = newInp.value.length;
-    newInp.selectionEnd = newInp.value.length;
-}
+//     // input "disabled" atribute delete
+//     const newInp = document.querySelector(`#${id} .todo_input`)
+//     newInp.disabled = false
+//     newInp.style.color = "#b0aaca"
+//     newInp.focus()
+//     newInp.selectionStart = newInp.value.length;
+//     newInp.selectionEnd = newInp.value.length;
+// }
 
 // CANCEL BUTTON
-const onCancel = (value, id) => {
-    const getBtn = (id, className) => document.querySelector(`#${id} .${className}`)
+// const onCancel = (value, id) => {
+//     const getBtn = (id, className) => document.querySelector(`#${id} .${className}`)
     
-    const editBtn = getBtn(id, "edit")
-    const saveBtn = getBtn(id, "save")
-    const cancelBtn = getBtn(id, "cancel")
+//     const editBtn = getBtn(id, "edit")
+//     const saveBtn = getBtn(id, "save")
+//     const cancelBtn = getBtn(id, "cancel")
 
-    editBtn.style.display = "block"
-    saveBtn.style.display = "none"
-    cancelBtn.style.display = "none"
+//     editBtn.style.display = "block"
+//     saveBtn.style.display = "none"
+//     cancelBtn.style.display = "none"
 
-    //inputdagi textni aktivlashtirish va rangini o'zgartirish
-    document.querySelector(`#${id} .todo_input`).disabled = true
-    document.querySelector(`#${id} .todo_input`).style.color = "#2B1887"
+//     //inputdagi textni aktivlashtirish va rangini o'zgartirish
+//     document.querySelector(`#${id} .todo_input`).disabled = true
+//     document.querySelector(`#${id} .todo_input`).style.color = "#2B1887"
 
-    // inputdagi o'zgarishni olmay, asliga qaytarib qo'yish
-    todos = todos.map((v) => (v.id == id ? {...v, value: value } : v))
-    render()
-}
+//     // inputdagi o'zgarishni olmay, asliga qaytarib qo'yish
+//     todos = todos.map((v) => (v.id == id ? {...v, value: value } : v))
+//     render()
+// }
 
 // SAVE BUTTON
-const onSave = (value, id) => {
-    const inputEdit = document.querySelector(`#${id} .todo_input`)
-    todos = todos.map((v) => (v.id == id ? {...v, value: inputEdit.value } : v))
-    render()
-}
+// const onSave = (value, id) => {
+//     const inputEdit = document.querySelector(`#${id} .todo_input`)
+//     todos = todos.map((v) => (v.id == id ? {...v, value: inputEdit.value } : v))
+//     render()
+// }
 
-// CLEAR BUTTON
+// CLEAR ALL BUTTON
 clearBtn.onclick = function() {
     list.innerHTML = ""
     todos = []
@@ -188,4 +266,3 @@ select.addEventListener("change", (event) => {
     render();
 })
 
-// DRAG AND DROP

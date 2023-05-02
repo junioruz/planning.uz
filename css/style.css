@@ -249,6 +249,7 @@ body div {
 }
 
 .todosList::-webkit-scrollbar {
+  display: none;
   width: 7px;
   background-color: #ffffff;
 }
