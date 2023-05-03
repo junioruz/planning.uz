@@ -289,17 +289,39 @@ body div {
 }
 
 .edit {
+  color: #5f48f4;
   display: block;
   cursor: pointer;
+  transition: all 0.3s linear;
+}
+
+.edit:hover {
+  transform: scale(1.3);
 }
 
 .save, .cancel {
+  color: #5f48f4;
   display: none;
   cursor: pointer;
 }
 
+.cancel:hover {
+  color: #434347;
+}
+
+.save:hover {
+  color: #434347;
+}
+
 .delete {
+  color: #5f48f4;
   cursor: pointer;
+  transition: all 0.3s linear;
+}
+
+.delete:hover {
+  color: #b65c2f;
+  transform: scale(1.3);
 }
 
 .clear {

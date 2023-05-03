@@ -28,6 +28,7 @@ const filterTodosByStatus = (todos, status) => {
     }
 }
 
+
 // RENDERING
 const render = () => {
     list.innerHTML = ""
@@ -256,8 +257,9 @@ form.addEventListener("submit", (event) => {
 
 // CLEAR ALL BUTTON
 clearBtn.onclick = function() {
-    list.innerHTML = ""
     todos = []
+    render()
+    list.innerHTML = ""
     clearImg.style.display = "block";
 }
 
