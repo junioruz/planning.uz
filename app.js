@@ -258,9 +258,9 @@ form.addEventListener("submit", (event) => {
 // CLEAR ALL BUTTON
 clearBtn.onclick = function() {
     todos = []
-    render()
     list.innerHTML = ""
     clearImg.style.display = "block";
+    render()
 }
 
 select.addEventListener("change", (event) => {
